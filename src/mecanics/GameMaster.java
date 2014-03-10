@@ -31,7 +31,7 @@ public class GameMaster
 		}
 		if(core != null)
 		{
-			core.close();
+			core.stop();
 			core = null;
 		}
 		screen = new Screen(new Point(100 , 100) , new Dimension(500 , 250));
@@ -47,7 +47,7 @@ public class GameMaster
 		}
 		if(core != null)
 		{
-			core.close();
+			core.stop();
 			core = null;
 		}
 		screen = new Screen(new Point(100 , 100) , new Dimension(500 , 250));

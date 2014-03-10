@@ -50,7 +50,7 @@ public class Core implements Runnable
 		run = true;
 	}
 	
-	public void close()
+	public void stop()
 	{
 		run = false;
 	}
