@@ -47,8 +47,8 @@ public class GameAPI
 	
 	public void startGame(int map, int teams)
 	{
-		gm.startGame(map,teams);
 		this.map = map;
+		gm.startGame(map,teams);
 	}
 	
 	public void createTeams(int teams)

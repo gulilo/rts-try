@@ -20,11 +20,11 @@ public class GamePanel extends BasePanel
 
 	public static PanelAPI panelApi;
 
+    // TODO - figure out the map types from the background folders
 	private final String[] backgroundPath =
 	{ "grass1" , "grass2" , "grass3" , "graund1" , "graund2" , "graund3" };
-	
-	private BufferedImage[] backgroundImages;
-	private BufferedImage[][] background;
+
+    private BufferedImage[][] background;
 
 	public GamePanel(Screen screen)
 	{
@@ -53,7 +53,7 @@ public class GamePanel extends BasePanel
 
 	private void makeBackground()
 	{
-		backgroundImages = new BufferedImage[NUMBER_OF_MAPS_IN_EACH_TYPE];
+        BufferedImage[] backgroundImages = new BufferedImage[NUMBER_OF_MAPS_IN_EACH_TYPE];
 		for(int i = 0; i < backgroundImages.length; i++)
 		{
 			try

@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 
 import panels.GamePanel;
-import panels.MainManuPanel;
+import panels.MainMenuPanel;
 import panels.OptionMenuPanel;
 import resorsece.GameAPI;
 
@@ -51,11 +51,11 @@ public class GameMaster
 			core = null;
 		}
 		screen = new Screen(new Point(100 , 100) , new Dimension(500 , 250));
-		screen.setContentPane(new MainManuPanel(screen));
+		screen.setContentPane(new MainMenuPanel(screen));
 		screen.open();
 	}
 
-	public void startGame(int map, int teams)
+	public void startGame(int type, int teams)
 	{
 		if(screen.isOpen())
 		{

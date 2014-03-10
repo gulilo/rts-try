@@ -11,13 +11,14 @@ import javax.swing.JButton;
 import mecanics.GameMaster;
 import mecanics.Screen;
 
-public class MainManuPanel extends BasePanel
+public class MainMenuPanel extends BasePanel
 {
 	private static final long serialVersionUID = 1L;
 
-	private JButton grass , graund , option , exit;
+	@SuppressWarnings("FieldCanBeLocal")
+    private JButton grass , ground, option , exit;
 
-	public MainManuPanel(Screen screen)
+	public MainMenuPanel(Screen screen)
 	{
 		super(screen);
 		
@@ -44,24 +45,22 @@ public class MainManuPanel extends BasePanel
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				GameMaster.api.startGame(0,1);
+				GameMaster.api.startGame(0, 1);
 			}
 		});
 		add(grass);
 
-		graund = new JButton("Graund");
-		graund.setSize(100, 50);
-		graund.setLocation(300, 100);
-		graund.setFocusable(false);
-		graund.addActionListener(new ActionListener()
-		{
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				GameMaster.api.startGame(1,1);
-			}
-		});
-		add(graund);
+		ground = new JButton("Graund");
+		ground.setSize(100, 50);
+		ground.setLocation(300, 100);
+		ground.setFocusable(false);
+		ground.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GameMaster.api.startGame(1, 1);
+            }
+        });
+		add(ground);
 
 		option = new JButton("Option");
 		option.setSize(100, 50);
