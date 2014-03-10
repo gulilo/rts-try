@@ -53,11 +53,6 @@ public class PanelListener implements MouseListener , KeyListener
 							last = new Point(last.x - 20 - cur.getInfo().getSize().width , last.y);
 							cur.getInfo().setTarget(last);
 						}
-						cur.getInfo().setReachTarget(false);
-						if(!cur.getInfo().isAnimationRunning())
-						{
-							cur.getInfo().startAnimation();
-						}
 					}
 				}
 				break;

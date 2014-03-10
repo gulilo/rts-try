@@ -23,8 +23,9 @@ public class Animation
 
 	public void start()
 	{
-		running = true;
-		timer.schedule(new TimerTask()
+        if (!running) {
+            running = true;
+            timer.schedule(new TimerTask()
 		{
 			@Override
 			public void run()
@@ -32,14 +33,17 @@ public class Animation
 				next();
 			}
 		} , 100 , 100);
+        }
 	}
 
 	public void stop()
 	{
-		running = false;
-		timer.cancel();
-		index = 0;
-		currentImage = images[0];
+        if (running) {
+            running = false;
+            timer.cancel();
+            index = 0;
+            currentImage = images[0];
+        }
 	}
 
 	public void next()

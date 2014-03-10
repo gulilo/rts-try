@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 import java.io.File;
 
 import javax.imageio.ImageIO;
@@ -16,6 +15,7 @@ import javax.swing.JPanel;
 import listeners.UnitListener;
 import mecanics.Animation;
 import mecanics.GameMaster;
+import resorsece.Logger;
 import resorsece.PanelAPI;
 
 public abstract class Unit extends JPanel
@@ -23,11 +23,14 @@ public abstract class Unit extends JPanel
 	private static final long serialVersionUID = 1L;
 
 	protected Team team;
-	protected int speed;
 	protected boolean selected;
-	protected Point target;
-	protected boolean reachTarget;
 	protected Animation anime;
+
+    protected int speed;
+    protected Point target;
+    protected int steps;
+    protected double sinAlpha;
+    protected double sinBeta;
 
 	public Unit(int team , Point location , Dimension size , int speed , String[] paths)
 	{
@@ -39,7 +42,6 @@ public abstract class Unit extends JPanel
 		this.speed = speed;
 		selected = false;
 		target = null;
-		reachTarget = true;
 
 		anime = new Animation(loadImages(paths));
 
@@ -75,18 +77,31 @@ public abstract class Unit extends JPanel
 		return this.getLocation().distance(unit.getLocation()) <= this.getLocation().distance(new Point(this.getLocation().x , this.getLocation().y + this.getSize().height)) || this.getLocation().distance(unit.getLocation()) <= this.getLocation().distance(new Point(this.getLocation().x + this.getSize().width , this.getLocation().y)) || this.getLocation().distance(unit.getLocation()) <= unit.getLocation().distance(new Point(unit.getLocation().x , unit.getLocation().y + unit.getSize().height)) || this.getLocation().distance(unit.getLocation()) <= unit.getLocation().distance(new Point(unit.getLocation().x + unit.getSize().width , unit.getLocation().y));
 	}
 
-	//not fully working
 	public void move()
 	{
-		if(!reachTarget)
-		{
-			/*
-			 * if() { Point temp = new
-			 * Point(getLocation().x+speed.x,line.next(getLocation
-			 * ().x+speed.x)); System.out.println(temp); setLocation(temp); }
-			 * else { line = new Line(getLocation(),target); }
-			 */
-		}
+        if (this.steps > 0) {
+            this.anime.start();
+            this.steps--;
+
+            Point nextStep = new Point();
+
+            if (this.steps == 0) {
+                nextStep.setLocation(target);
+            }
+            else {
+                Point currentLocation = this.getLocation();
+                int dx = (int) Math.round(sinBeta * speed);
+                int dy = (int) Math.round(sinAlpha * speed);
+                nextStep.setLocation(currentLocation.getX() + dx, currentLocation.getY() + dy);
+            }
+
+            Logger.log("move to [ " + "nextStep=" + nextStep.toString() + " ]");
+
+            setLocation(nextStep);
+        }
+        else {
+            this.anime.stop();
+        }
 	}
 
 	private Image[] loadImages(String[] paths)
@@ -110,21 +125,6 @@ public abstract class Unit extends JPanel
 		return im;
 	}
 
-	public void startAnimation()
-	{
-		anime.start();
-	}
-
-	public void stopAnimation()
-	{
-		anime.stop();
-	}
-
-	public boolean isAnimationRunning()
-	{
-		return anime.isRunning();
-	}
-
 	public boolean isSelected()
 	{
 		return selected;
@@ -142,11 +142,25 @@ public abstract class Unit extends JPanel
 
 	public void setTarget(Point target)
 	{
-		this.target = target;
-	}
+        Point currentLocation = this.getLocation();
+        double dx = Math.abs(target.getX() - currentLocation.getX());
+        double dy = Math.abs(target.getY() - currentLocation.getY());
+        double totalDistance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-	public void setReachTarget(boolean reachTarget)
-	{
-		this.reachTarget = reachTarget;
+        this.steps = (int) Math.ceil(totalDistance / speed);
+		this.target = target;
+        this.sinAlpha = Math.sin(Math.atan(dy / dx));
+        this.sinBeta = Math.sin(Math.atan(dx / dy));
+
+//        Logger.log("dy = " + dy + ", dx = " + dx);
+//        Logger.log("dy / dx = " + (dy / dx));
+//        Logger.log("Math.atan(dy / dx) = " + Math.atan(dy / dx));
+//
+//        Logger.log("dy / dx = " + (dy / dx));
+//        Logger.log("Math.atan(dy / dx) = " + Math.atan(dy / dx));
+//
+//        Logger.log("setTarget [ " + "location=" + getLocation().toString() + ", target=" + target.toString() +  " ]");
+//        Logger.log("sinAlpha=" + sinAlpha);
+//        Logger.log("sinBeta=" + sinBeta);
 	}
 }
