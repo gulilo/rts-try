@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import listeners.UnitListener;
 import mecanics.Animation;
 import mecanics.GameMaster;
-import resorsece.Logger;
 import resorsece.PanelAPI;
 
 public abstract class Unit extends JPanel
@@ -28,9 +27,6 @@ public abstract class Unit extends JPanel
 
     protected int speed;
     protected Point target;
-    protected int steps;
-    protected double sinAlpha;
-    protected double sinBeta;
 
 	public Unit(int team , Point location , Dimension size , int speed , String[] paths)
 	{
@@ -79,29 +75,39 @@ public abstract class Unit extends JPanel
 
 	public void move()
 	{
-        if (this.steps > 0) {
-            this.anime.start();
-            this.steps--;
+        if (this.target == null) {
+            return;
+        }
 
-            Point nextStep = new Point();
+        this.anime.start();
 
-            if (this.steps == 0) {
-                nextStep.setLocation(target);
-            }
-            else {
-                Point currentLocation = this.getLocation();
-                int dx = (int) Math.round(sinBeta * speed);
-                int dy = (int) Math.round(sinAlpha * speed);
-                nextStep.setLocation(currentLocation.getX() + dx, currentLocation.getY() + dy);
-            }
+        Point currentLocation = this.getLocation();
+        double dx = this.target.getX() - currentLocation.getX();
+        double dy = this.target.getY() - currentLocation.getY();
+        double totalDistance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-            Logger.log("move to [ " + "nextStep=" + nextStep.toString() + " ]");
+        Point nextStep = new Point();
 
-            setLocation(nextStep);
+        if (totalDistance <= speed) {
+            nextStep.setLocation(target);
+            this.anime.stop();
+            target = null;
         }
         else {
-            this.anime.stop();
+            double yx = Math.abs(dy / dx);
+            double alpha = Math.atan(yx);
+            double sinAlpha = Math.sin(alpha);
+
+            double xy = Math.abs(dx / dy);
+            double beta = Math.atan(xy);
+            double sinBeta = Math.sin(beta);
+
+            int nextX = (int) (Math.round(sinBeta * speed) * Math.signum(dx));
+            int nextY = (int) (Math.round(sinAlpha * speed) * Math.signum(dy));
+            nextStep.setLocation(currentLocation.getX() + nextX, currentLocation.getY() + nextY);
         }
+
+        setLocation(nextStep);
 	}
 
 	private Image[] loadImages(String[] paths)
@@ -141,26 +147,7 @@ public abstract class Unit extends JPanel
 	}
 
 	public void setTarget(Point target)
-	{
-        Point currentLocation = this.getLocation();
-        double dx = Math.abs(target.getX() - currentLocation.getX());
-        double dy = Math.abs(target.getY() - currentLocation.getY());
-        double totalDistance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-
-        this.steps = (int) Math.ceil(totalDistance / speed);
-		this.target = target;
-        this.sinAlpha = Math.sin(Math.atan(dy / dx));
-        this.sinBeta = Math.sin(Math.atan(dx / dy));
-
-//        Logger.log("dy = " + dy + ", dx = " + dx);
-//        Logger.log("dy / dx = " + (dy / dx));
-//        Logger.log("Math.atan(dy / dx) = " + Math.atan(dy / dx));
-//
-//        Logger.log("dy / dx = " + (dy / dx));
-//        Logger.log("Math.atan(dy / dx) = " + Math.atan(dy / dx));
-//
-//        Logger.log("setTarget [ " + "location=" + getLocation().toString() + ", target=" + target.toString() +  " ]");
-//        Logger.log("sinAlpha=" + sinAlpha);
-//        Logger.log("sinBeta=" + sinBeta);
-	}
+{
+    this.target = target;
+}
 }
